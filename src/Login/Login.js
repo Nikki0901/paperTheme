@@ -13,10 +13,10 @@ import './login-form.css'
 const Login = () => {
 
   const { handleSubmit, register, errors,reset } = useForm();
-  // const URL = 'http://api.com';
+
   
   const onSubmit = data => {
-    console.log("data:",data);
+    console.log(data);
     // const resp = fetch(URL).then(res => {
     //   console.log(res)
     // });
@@ -25,8 +25,7 @@ const Login = () => {
     return (
       <div>
   
-        
-      
+            
         <Form  className="form" onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
             <Col>
@@ -70,7 +69,7 @@ const Login = () => {
 
           <Col>
             <FormGroup>
-            <Button className="form-btn" type="submit">Login</Button>
+            <Button className="form-btn" type="submit">Login</Button>  
               <Button
                 className="form-btn"
                 type="Button"
