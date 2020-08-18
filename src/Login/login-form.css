@@ -1,0 +1,59 @@
+.error {
+  color: red;
+}
+
+.form {
+  background:burlywood;
+  max-width: 500px;
+  margin: 0 auto;
+  padding-top: 50px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+
+}
+
+.input_Field {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 6px;
+  border: 2px solid white;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.form_title{
+  text-align: center;
+  text-transform: capitalize;
+ text-decoration-line: underline;
+}
+
+.App_form{
+margin-top: 20px auto;
+}
+
+label {
+  line-height: 2;
+  text-align: left;
+  display: block;
+  margin-bottom: 13px;
+  margin-top: 20px;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+
+.form-btn{
+  background: darkcyan;
+  color: white;
+  text-transform: uppercase;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 3px;
+}
+
