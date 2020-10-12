@@ -14,16 +14,10 @@ class Footer extends React.Component {
             <nav className="footer-nav">
               <ul>
                 <li>
-                  <a href="http://multitvsolution.com/" target="_blank">
-                    multitv
+                  <a href="http://vride.multitvsolution.com/">
+                    vride
                   </a>
-                </li>
-                <li>
-                  <a href="#" target="_blank">
-                    Blog
-                  </a>
-                </li>
-                
+                </li>               
               </ul>
             </nav>
             <div className="credits ml-auto">

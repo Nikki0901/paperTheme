@@ -44,9 +44,20 @@ class Dashboard extends React.Component {
   // handleBgClick = (color) => {
   //   this.setState({ backgroundColor: color });
   // };
+
+
+  // adminAuth = () =>{
+  //   // console.log("kg")
+  //   var auth = JSON.parse(localStorage.getItem('authToken'))
+  //     if(!auth){
+  //      this.props.history.push('/');            
+  //     }
+  //   }
+
   render() {
     return (
-      <div className="wrapper">
+      <div className="wrapper">     
+        {/* {this.adminAuth()} */}
         <Sidebar
           {...this.props}
           routes={routes}

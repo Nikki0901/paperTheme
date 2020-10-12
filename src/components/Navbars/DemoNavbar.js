@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -13,10 +12,6 @@ import {
   DropdownMenu,
   DropdownItem,
   Container,
-  InputGroup,
-  InputGroupText,
-  InputGroupAddon,
-  Input,
 } from "reactstrap";
 
 import routes from "routes.js";
@@ -66,6 +61,7 @@ class Header extends React.Component {
     document.documentElement.classList.toggle("nav-open");
     this.sidebarToggle.current.classList.toggle("toggled");
   }
+
   // function that adds color dark/transparent to the navbar on resize (this is for the collapse)
   updateColor() {
     if (window.innerWidth < 993 && this.state.isOpen) {
@@ -78,6 +74,7 @@ class Header extends React.Component {
       });
     }
   }
+
   componentDidMount() {
     window.addEventListener("resize", this.updateColor.bind(this));
   }
@@ -91,8 +88,16 @@ class Header extends React.Component {
       this.sidebarToggle.current.classList.toggle("toggled");
     }
   }
+
+  Logout = () => {
+    localStorage.clear();
+    this.props.history.push("/");
+  };
+
   render() {
-    return (   
+    const userName = JSON.parse(localStorage.getItem("userName"));
+
+    return (
       <Navbar
         color={
           this.props.location.pathname.indexOf("full-screen-maps") !== -1
@@ -123,66 +128,52 @@ class Header extends React.Component {
             </div>
             <NavbarBrand href="/">{this.getBrand()}</NavbarBrand>
           </div>
-          {/* <NavbarToggler onClick={this.toggle}>
+
+          <NavbarToggler onClick={this.toggle}>
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
-          </NavbarToggler> */}
+          </NavbarToggler>
+
           <Collapse
             isOpen={this.state.isOpen}
             navbar
             className="justify-content-end"
           >
-
-            {/* <form>
-              <InputGroup className="no-border">
-                <Input placeholder="Search..." />
-                <InputGroupAddon addonType="append">
-                  <InputGroupText>
-                    <i className="nc-icon nc-zoom-split" />
-                  </InputGroupText>
-                </InputGroupAddon>
-              </InputGroup>
-            </form> */}
-
-
-
-
-            {/* <Nav navbar>
+            <Nav navbar>
               <NavItem>
-                <Link to="#pablo" className="nav-link btn-magnify">
-                  <i className="nc-icon nc-layout-11" />
+                <Link to="#" className="nav-link btn-magnify">
+                  <i className="nc-icon nc-single-02" />
                   <p>
-                    <span className="d-lg-none d-md-block">Stats</span>
+                    <span style={{ fontWeight: "600", color: "cadetblue" }}>
+                      {userName}
+                    </span>
                   </p>
                 </Link>
               </NavItem>
+
               <Dropdown
                 nav
                 isOpen={this.state.dropdownOpen}
                 toggle={(e) => this.dropdownToggle(e)}
               >
                 <DropdownToggle caret nav>
-                  <i className="nc-icon nc-bell-55" />
+                  <i className="nc-icon nc-button-power" />
                   <p>
                     <span className="d-lg-none d-md-block">Some Actions</span>
                   </p>
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem tag="a">Action</DropdownItem>
-                  <DropdownItem tag="a">Another Action</DropdownItem>
-                  <DropdownItem tag="a">Something else here</DropdownItem>
+                  <DropdownItem
+                    tag="a"
+                    onClick={this.Logout}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Logout
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <NavItem>
-                <Link to="#pablo" className="nav-link btn-rotate">
-                  <i className="nc-icon nc-settings-gear-65" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Account</span>
-                  </p>
-                </Link>
-              </NavItem>
-            </Nav> */}
+            </Nav>
           </Collapse>
         </Container>
       </Navbar>

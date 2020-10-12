@@ -1,196 +1,313 @@
-import React, { useState, useEffect,useMemo }  from 'react';
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import { useAlert } from "react-alert";
+
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardTitle,
-    Row,
-    Col,
-    Table
-  } from "reactstrap";
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  Row,
+  Col,
+  Table,
+  Button,
+} from "reactstrap";
 
- import Pagination from '../Datatable/Pagination'
- import Search from '../Datatable/Search'
- import HeaderComp from '../Datatable/Header'
+import baseUrl from "../../components/Service/Config";
+import Delete from "../../assets/svg/delete";
+import "../../assets/css/style.css";
+import AddDetails from "./AddDetails";
+import EditDetails from "./EditDetails";
 
+const SalesLoginUser = () => {
+  const alert = useAlert();
+  const [data, setData] = useState([]);
+  const [next, setNext] = useState(null);
+  const [prev, setPrev] = useState(0);
+  const [serial, setSerial] = useState(1);
+  const [limit] = useState(10);
+  const [id, setId] = useState(null);
 
+  const auth = JSON.parse(localStorage.getItem("authToken"));
 
-const SalesLoginUser =() => {
- 
-  const [comments, setComments] = useState([]);
-  const [totalItems, setTotalitems] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState('');
+  //update data
+  const updateData = (id) => {
+    var a = id;
+    var nt = id - 10; // 8 - 4
 
-  const ITEM_PER_Page = 20;
+    if (a === next) {
+      nextPage(nt); // key = 4 , 8
+    } else if (nt === prev) {
+      prevPage(nt); // key = 0 , 4
+    } else {
+      getData();
+    }
+  };
 
+  // add modal
+  const [addModal, setAddModal] = useState(false);
+  const addHandler = () => setAddModal(!addModal);
 
+  // edit modal
+  const [editModal, setEditModal] = useState(false);
+  const editHandler = (id) => {
+    setEditModal(!editModal);
+    setId(id);
+  };
 
-    const headers =[
-      {name:"no#", field:"id"},
-      {name:"Name", field:"name"},
-      {name:"Email", field:"email"},
-      {name:"Comment", field:"body"},
-
-    ]
-
-  useEffect( () =>{
-
-    const getData = () => {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-      .then(response => response.json())
-      .then(json => {
-        setComments(json)
+  //get data
+  const getData = useCallback(() => {
+    fetch(`${baseUrl}/bmw/sales_list/token/${auth}/id//offset/0/limit/10`)
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("salesData", json);
+        console.log("offset", json.offset);
+        if (json.code === 1) {
+          setData(json.result);
+          setNext(json.offset); // offset = 4
+        } else {
+          alert.show("result not found !");
+        }
+      })
+      .catch((err) => {
+        alert.error("request error ! check it");
       });
-    }
+  }, [auth, alert]);
 
+  useEffect(() => {
+    console.log("call sales use effect");
     getData();
-  },[])
- 
+  }, [getData]);
 
-  const commentsData = useMemo( () => {
-    let computeComments = comments;
-    console.log(computeComments)
+  // search data
+  const search = (key) => {
+    console.log("input--", key);
+    axios
+      .get(`${baseUrl}/user/search/value/${key}/role/sales/token/${auth}`)
+      .then(function (response) {
+        console.log("code---", response.data.result);
+        if (response.data.result) {
+          setData(response.data.result);
+          setSerial(1);
+          setNext(10);
+        }
+        // updateData(next);
+      })
+      .catch(function (error) {
+        alert.error("request error !");
+      });
+  };
 
-    if(search){
-      computeComments = computeComments.filter(p =>
-        p.name.toLowerCase().includes(search.toLocaleLowerCase()) ||
-        p.email.toLowerCase().includes(search.toLocaleLowerCase())
-      );
-    }
+  // next
+  const nextPage = (key) => {
+    console.log("next", key);
+    axios
+      .get(`${baseUrl}/sales_users/list/offset/${key}/limit/10/token/${auth}`)
+      .then(function (response) {
+        console.log("next-data", response);
+        if (response.data.code === 1) {
+          // console.log(response.data.offset)
+          setData(response.data.result);
+          setNext(response.data.offset); // get offset = 8
+          setPrev(response.data.offset - limit * 2);
+          setSerial(key + 1);
+        } else {
+          alert.show("no data !");
+        }
+        console.log("offset :", response.data.offset);
+      })
 
-    setTotalitems(computeComments.length)
-    return computeComments.slice( 
-      (currentPage - 1) * ITEM_PER_Page, 
-      (currentPage - 1) * ITEM_PER_Page + ITEM_PER_Page);
-      
-  },[comments,currentPage, search])
+      .catch(function (error) {
+        alert.error("request error ! check it", error);
+      });
+  };
 
- 
-        return (
-      <>
-        <div className="content">
-          <Row>        
-            <Col md="12">
-              <Card className="card-plain">
-                <CardHeader>
-                  <CardTitle tag="h4">Sales User List</CardTitle>
-                  <p className="card-category">
-                    Here is a subtitle for this table
-                  </p>
-                </CardHeader>
-                <CardHeader>
-              
-                  <Pagination total={totalItems} itemsPerPage={ITEM_PER_Page} currentPage={currentPage} 
-                  onPageChange={page => setCurrentPage(page)}
-                  />
-                 
-                  
-                  <Search onSearch={(value) => { 
-                    setSearch(value); 
-                    setCurrentPage(1); 
-                   }}                 
-                  />
-           
+  //prev
+  const prevPage = (key) => {
+    console.log("prev", key);
+    axios
+      .get(`${baseUrl}/sales_users/list/offset/${key}/limit/10/token/${auth}`)
+      .then(function (response) {
+        console.log("prev-data", response);
+        if (response.data.code === 1) {
+          setData(response.data.result);
+          setPrev(response.data.offset - limit * 2); // c = 0 , 4
+          setNext(response.data.offset);
+          setSerial(key + 1);
+        } else {
+          alert.show("no data !");
+        }
+      })
+      .catch(function (error) {
+        alert.error("request error ! check it", error);
+      });
+  };
 
-                  
+  // delete data
+  const del = (id) => {
+    // console.log("del", id);
+    axios
+      .get(`${baseUrl}/Bmw/sales_person/delete/token/${auth}/user_id/${id}`)
+      .then(function (response) {
+        // console.log("delete-", response);
+        alert.success("successfully deleted ");
+        updateData(next);
+      })
+      .catch((err) => {
+        alert.error("request error ! not deleted", err);
+      });
+  };
 
-                </CardHeader>
-                <CardBody>
-                  <Table responsive >
-                  <HeaderComp  headers={headers}/>
-                    <tbody>
-                      {
-                       commentsData.map((p,i) =>(
-                          <tr key={i}>
-                          <td>{p.id}</td>
-                          <td>{p.name}</td>
-                          <td>{p.email}</td>
-                          <td>{p.body}</td>
-                                       
-                        </tr>
-                        ))
-                      }            
-                    </tbody>
-                  </Table>
-                
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </>
-        );
-  
-}
+  return (
+    <>
+      <div className="content">
+        <Card>
+          <CardHeader>
+            <Row>
+              <Col md="6" className="sales_header">
+                <CardTitle tag="h4">Sales User</CardTitle>
+              </Col>
+              <Col md="6" className="search_head">
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: "240px" }}
+                  placeholder="search"
+                  onChange={(event) => search(event.target.value)}
+                />
+                <button
+                  style={{ marginLeft: 20, padding: 10, borderRadius: 2 }}
+                  type="button"
+                  className="btn btn-info btn-sm"
+                  onClick={addHandler}
+                >
+                  Add User
+                  <i
+                    className="fa fa-plus-square"
+                    style={{ marginLeft: 5, fontSize: 14 }}
+                  ></i>
+                </button>
+              </Col>
+            </Row>
+          </CardHeader>
+          <CardBody>
+            <Table responsive="sm">
+              <thead>
+                <tr>
+                  <th>S.no</th>
+                  <th>Name</th>
+                  <th>Phone No</th>
+                  <th>Location</th>
+                  <th>Pin</th>
+                  <th>Date</th>
+                  <th style={{ textAlign: "center" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.length > 0 ? (
+                  data.map((p, i) => (
+                    <tr key={i}>
+                      <td>{i + serial}</td>
+                      <td>{p.first_name}</td>
+                      <td>{p.phone}</td>
+                      <td>{p.city}</td>
+                      <td>{p.pincode}</td>
+                      <td>{p.created}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <i
+                          className="fa fa-edit"
+                          style={{ fontSize: 18, cursor: "pointer" }}
+                          onClick={() => editHandler(p.id)}
+                        ></i>
+                        <Delete onClick={() => del(p.id)} />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7">No Records</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+            <div className="pagination_btn">
+              <Button color="success" onClick={() => prevPage(prev)}>
+                Prev
+              </Button>
+              <Button
+                style={{ marginLeft: 10 }}
+                color="success"
+                onClick={() => nextPage(next)}
+              >
+                Next
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+
+        <AddDetails
+          addModal={addModal}
+          addHandler={addHandler}
+          getData={updateData}
+          next={next}
+        />
+
+        <EditDetails
+          editModal={editModal}
+          editHandler={editHandler}
+          id={id}
+          getData={updateData}
+          next={next}
+        />
+      </div>
+    </>
+  );
+};
 
 export default SalesLoginUser;
 
 
-
-
-
-
-
-
-
-
-
-
-//   handlePageClick = (e) => {
-//     const selectedPage = e.selected;
-//     const offset = selectedPage * this.state.perPage;
-
-//     this.setState({
-//         currentPage: selectedPage,
-//         offset: offset
-//     }, () => {
-//         this.loadMoreData()
-//     });
-
+// const updateData = () => {
+//   setData(data.filter((c) => c.id != id));
 // };
 
-// loadMoreData() {
-//   const data = this.state.orgtableData;
-  
-//   const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-//   this.setState({
-//     pageCount: Math.ceil(data.length / this.state.perPage),
-//     tableData:slice
-//   })
+// fetch(`${baseUrl}/bmw/sales_list/token/5eee167482092/id/${id}/offset/0/limit/10`)
+// .then((response) => response.json())
+// .then((json) => {
+//   console.log("salesData", json);
+//     setUser({
+//       name : json.result[0].first_name,
+//     });
+// })
 
-//   }
-
-
-//   componentDidMount(){
-//     this.getData();
-//   }
-
-//   getData(){
-//     axios
-//     .get("https://jsonplaceholder.typicode.com/comments")
-//     .then(res =>{
-//       var data = res.data;
-//       var slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-
-//       this.setState({
-//         pageCount:Math.ceil(data.length / this.state.perPage),
-//         orgtableData : res.data,
-//         tableData:slice
-//       })
-//     })
-//   }
-
-  {/* <ReactPaginate
-                    previousLabel={'previous'}
-                    nextLabel={'next'}
-                    breakLabel={'...'}
-                    breakClassName={'break-me'}
-                    pageCount={this.state.pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={this.handlePageClick}
-                    containerClassName={'pagination'}
-                    subContainerClassName={'pages pagination'}
-                    activeClassName={'active'}
-                  /> */}
+{
+  /* <Modal isOpen={editModal} toggle={editHandler}>
+        <ModalHeader toggle={editHandler}>Fill Form</ModalHeader>
+        <ModalBody>
+          <form>
+            <div className="form-group">
+              <label>Add title</label>
+              <input
+                type="text"
+                className="form-control"
+                name="p_title"
+                defaultValue={name}
+                ref={register({
+                  required: "required",
+                })}
+              />
+            </div>
+          
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </form>
+        </ModalBody>
+      </Modal> */
+}

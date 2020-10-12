@@ -1,112 +1,167 @@
-import React from "react";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardTitle,
-  Row,
-  Col,
-} from "reactstrap";
+import React, { useState, useEffect } from "react";
+import { Card, CardTitle, Row, Col, Spinner } from "reactstrap";
+import baseUrl from "../../components/Service/Config";
+import { useAlert } from "react-alert";
+import '../../assets/css/style.css';
 
-const data = [
-  {
-    name:"Total Users",
-    Total_number:1238900,
-    status:"Update now",
-    icon:"nc-icon nc-money-coins text-success"
-  },
-  {
-    name:"Total Session",
-    Total_number:62380,
-    status:"Update now",
-    icon:"nc-icon nc-globe text-warning"
-
-  },{
-    name:"Total Sales Person  ",
-    Total_number:39540,
-    status:"Update now",
-    icon:"nc-icon nc-money-coins text-success"
-
-  },{
-    name:"Total Followers",
-    Total_number:34100,
-    status:"Update now",
-    icon:"nc-icon nc-globe text-warning"
-
-  },
-  {
-    name:"Total Users",
-    Total_number:900,
-    status:"Last Day",
-    icon:"nc-icon nc-favourite-28 text-primary"
-  },
-  {
-    name:"Total Session",
-    Total_number:2376,
-    status:"Last Day",
-    icon:"nc-icon nc-globe text-warning"
-  },{
-    name:"Total Sales Person  ",
-    Total_number:9768,
-    status:"Last Day",
-    icon:"nc-icon nc-favourite-28 text-primary"
-  },{
-    name:"Total Followers",
-    Total_number:2310,
-    status:"Last Day",
-    icon:"nc-icon nc-globe text-warning"
-  },
-
-]
+function Dashboard() {
+  const alert = useAlert();
+  const [user, setUser] = useState("");
+  const [sales, setSales] = useState("");
+  const [recording, setRecording] = useState("");
+  const [dealership, setDealerShip] = useState("");
 
 
-class Dashboard extends React.Component {
-  render() {
-    return (
-      <>
-        <div className="content">
-          <Row>
-         
-              {
-                data.map((p,i) => (
-                 <Col lg="3" md="6" sm="6">             
-                <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className={p.icon} />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p className="card-category">{p.name}</p>
-                        <CardTitle tag="p">{p.Total_number}</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fas fa-sync-alt" /> {p.status}
-                  </div>
-                </CardFooter>
-              </Card>
-              </Col>
-                ))
-              }
-              
-             
-          </Row>
+  const auth = JSON.parse(localStorage.getItem("authToken"));
+
+  
+
+  useEffect(() => {
+    const getUser = () => {
+      fetch(`${baseUrl}/user/count/token/${auth}`)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log("data", json);
+          if (json.code === 1) {
+            setUser(json);
+          }
+        })
+        .catch((err) => {
+           alert.error("User ,request error ! check it");
+        });
+    };
+    const getSales = () => {
+      fetch(`${baseUrl}/sales_users/count/token/${auth}`)
+        .then((response) => response.json())
+        .then((json) => {
+          // console.log("data", json);
+          if (json.code === 1) {
+            setSales(json);
+          }
+        })
+        .catch((err) => {
+           alert.error("Sales ,request error ! check it");
+        });
+    };
+    const getRecording = () => {
+      fetch(`${baseUrl}/users/recording/list/offset/0/limit/10/token/${auth}`)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log("data", json);
+          if (json.code === 1) {
+            setRecording(json);
+          }
+        })
+        .catch((err) => {
+           alert.error("Recording ,request error ! check it");
+        });
+    };
+
+    const getDealership = () => {
+      fetch(`${baseUrl}/dealership/list/offset/0/limit/10/token/${auth}`)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log("data", json);
+          if (json.code === 1) {
+            setDealerShip(json);
+          }
+        })
+        .catch((err) => {
+           alert.error("dealership ,request error ! check it");
+        });
+    };
+    
+    getUser();
+    getSales();
+    getRecording();
+    getDealership();
+  }, [alert,auth]);
+
+ 
+ 
+ 
+
+  return (
+    <>
+      <div className="content">
+        <Row>
+          <Col lg="4" sm="6">
+            <Card
+              body
+              className="total_user"
+            >
+              <div className="numbers">
+                <CardTitle>Total User</CardTitle>
+                <CardTitle tag="h4">
+                  {user.count ? (
+                    user.count
+                  ) : (
+                    <Spinner type="grow" color="primary" />
+                  )}
+                </CardTitle>
+              </div>
+            </Card>
+          </Col>
+
+          <Col lg="4" sm="6">
+            <Card body className="total_sales">
+              <div className="numbers">
+                <CardTitle>Total Sales Person</CardTitle>
+                <CardTitle tag="h4">
+                  {sales.count ? (
+                    sales.count
+                  ) : (
+                    <Spinner type="grow" color="danger" />
+                  )}
+                </CardTitle>
+              </div>
+            </Card>
+          </Col>
+
+          <Col lg="4" sm="6">
+            <Card
+              body
+              className="total_recording"
+            >
+              <div className="numbers">
+                <CardTitle>Total Recording </CardTitle>
+                <CardTitle tag="h4">
+                  {recording.count ? (
+                    recording.count
+                  ) : (
+                    <Spinner type="grow" color="danger" />
+                  )}
+                </CardTitle>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col lg="4" sm="6">
+            <Card
+              body
+              className="total_dealership"
+            >
+              <div className="numbers">
+                <CardTitle>Total Dealership</CardTitle>
+                <CardTitle tag="h4">
+                  {dealership.count ? (
+                    dealership.count
+                  ) : (
+                    <Spinner type="grow" color="primary" />
+                  )}
+                </CardTitle>
+              </div>
+            </Card>
+          </Col>
+
         
-        </div>
-      </>
-    );
-  }
+        </Row>
+      </div>
+    </>
+  );
 }
 
 export default Dashboard;
-
 

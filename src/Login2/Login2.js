@@ -2,11 +2,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useAlert } from "react-alert";
-import "./login-form.css";
 import baseUrl from "../components/Service/Config";
 import clip from "../../src/assets/video/clip.mp4";
+import "./login2.css";
 
-const Login = (props) => {
+const Login2 = (props) => {
   const { handleSubmit, register, errors, reset } = useForm();
   const alert = useAlert();
 
@@ -47,37 +47,31 @@ const Login = (props) => {
       });
   };
 
-  // const loginAuth = () => {
-  //   var auth = JSON.parse(localStorage.getItem("authToken"));
-  //   if (auth) {
-  //     props.history.push("/admin/dashboard");
-  //   }
-  // };
-
   return (
     <>
-      <div>
-        {/* {loginAuth()} */}
-        <video id="background-video" loop autoPlay muted>
-          <source src={clip} type="video/mp4" />
-        </video>
-        <div className="login">
-          <h1>Vride</h1>
-          <form onSubmit={handleSubmit(onSubmit)}>
+      <video className="background-video" loop autoPlay muted>
+        <source src={clip} type="video/mp4" />
+      </video>
+      <div className="login_head">
+        <form className="login_form col-lg-3 col-md-4 col-10" onSubmit={handleSubmit(onSubmit)}>
+          <h1>VRIDE</h1>
+          <div class="form-group">
             <input
+              placeholder="Email"
               type="email"
               name="email"
-              placeholder="email"
               className="input_Field"
               ref={register({
-                required: "Email is required",
+                required: "This field is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
+                  message: "invalid email address",
                 },
               })}
             />
             <p className="error">{errors.email && errors.email.message}</p>
+          </div>
+          <div class="form-group">
             <input
               type="password"
               name="password"
@@ -87,41 +81,23 @@ const Login = (props) => {
                 required: "required",
               })}
             />
-            {errors.password && <p className="error">Password is required</p>}
+
+            {errors.password && <p className="error">This field is required</p>}
+          </div>
+
+          <div class="form-group">
             <button
               type="submit"
-              className="btn btn-primary
+              class="btn btn-primary
                  btn-block btn-large"
             >
               Login
             </button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </>
   );
 };
 
-export default Login;
-
-
-// class App extends Component {
-//   componentWillMount() {
-//     if (localStorage.getItem('Authorization')) {
-//       history.push(`${history.location.pathname}`)
-//     }
-//   }
-
-//   render() {
-//     return (
-//       <Router history={history}>
-//         <div className="App-pageContainer">
-//           <Route exact path="/" render={() => <Redirect to="/login" />} />
-//           <Route path={'/login'} component={Login} />
-//           <PrivateRoute path={'/dashboard'} component={Dashboard} />
-//         </div>
-//       </Router>
-//     )
-//   }
-// }
-// export default App
+export default Login2;
