@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import { useAlert } from "react-alert";
+import axios from "axios";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Card,
   CardHeader,
@@ -10,36 +10,53 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { baseUrl } from "../../components/Service/Config";
+// import Page from '../Pag'
+// import TestTable from '../Extra/TestTable'
 
-import baseUrl from "../../components/Service/Config";
 
 const Analytics = () => {
-  const alert = useAlert();
   const [data, setData] = useState({});
+  const [dataSchedule, setDataSchedule] = useState([]);
 
   const auth = JSON.parse(localStorage.getItem("authToken"));
+  //username
+  const userName = JSON.parse(localStorage.getItem("userName"));
 
   useEffect(() => {
-    // console.log("useeffect")
     const getData = () => {
-      fetch(`${baseUrl}/analytics/user/monthly/count/token/${auth}`)
-        .then((response) => response.json())
-        .then((json) => {
-          console.log("data", json);
-          if (json.code === 1) {
-            setData(json.result);
-          } else {
-            alert.show("result not found !");
+      axios
+        .get(`${baseUrl}/analytics/user/monthly/count/token/${auth}`)
+        .then((response) => {
+          // console.log("code---", response);
+          if (response.data.code === 1) {
+            setData(response.data.result);
           }
         })
-        .catch((err) => {
-          alert.error("request error ! check it");
+        .catch((error) => {
+          console.log("error", error);
         });
     };
+
+    const getDataSchedule = () => {
+      axios
+        .get(`${baseUrl}/analytics/schedule/Daily/count/token/${auth}`)
+        .then((response) => {
+          console.log("code---", response);
+          if (response.data.code === 1) {
+            setDataSchedule(response.data.result);
+          }
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    };
+
     getData();
-  }, [auth,alert]);
+    getDataSchedule();
+  }, [auth]);
 
-
+  // line chart
   const dataItem = {
     labels: data.Month,
     datasets: [
@@ -63,35 +80,100 @@ const Analytics = () => {
     },
   };
 
+  // bar chart of bmw
+  const dataBar = {
+    labels:  dataSchedule.Day,
+    datasets: [
+      {
+        // labels:[0,1,2,4],
+        data: dataSchedule.Schedule,
+        label: "Schedule",
+        backgroundColor: "darkcyan",
+        borderColor: "#3b3f8c",
+        borderWidth: 1,
+        hoverBackgroundColor: "#1ae6e6",
+        hoverBorderColor: "rgba(255,99,132,1)",
+        
+      },
+    ],
+  };
+
+  const options3 = {
+    responsive: true,
+    title: {
+      display: true,
+      position: "left",
+      text: "Schedule",
+    },
+    legend: {
+      display: false,
+    },
+    type: "bar",
+  };
+
   return (
     <div className="content">
       <Row>
         <Col md="12">
           <Card className="card-chart">
             <CardHeader>
-              <CardTitle tag="h5">Monthly Users Report</CardTitle>
-              <p className="card-category">Line Chart with Points</p>
+              {userName === "BMW" ? (
+                <CardTitle tag="h5">Monthly Schedule Report</CardTitle>
+              ) : (
+                <CardTitle tag="h5">Monthly User Report</CardTitle>
+              )}
             </CardHeader>
 
             <CardBody>
-              <Line
-                data={dataItem}
-                width={400}
-                height={100}
-                options={options}
-              />
+              {userName === "BMW" ? (
+                <p className="card-category">Bar Chart with Points</p>
+              ) : (
+                <p className="card-category">Line Chart with Points</p>
+              )}
+              {userName === "BMW" ? (
+                <Bar
+                  data={dataBar}
+                  width={400}
+                  height={100}
+                  options={options3}
+                />
+              ) : (
+                <Line
+                  data={dataItem}
+                  width={400}
+                  height={100}
+                  options={options}
+                />
+              )}
             </CardBody>
 
-            <CardFooter>
-              <div className="chart-legend">
-                <i className="fa fa-circle text-warning" /> Users
-              </div>
-              <hr />
-              <div className="card-stats">
-                <i className="fa fa-check" /> Data information certified
-              </div>
-            </CardFooter>
+            {userName === "BMW" ? (
+              <CardFooter>
+                <div className="chart-legend">
+                  <i className="fa fa-circle text-primary" />
+                  Vertically : Schedule
+                </div>
+                <div className="chart-legend">
+                  <i className="fa fa-circle text-primary" /> Horizontally :
+                  Days
+                </div>
+                <hr />
+                <div className="card-stats">
+                  <i className="fa fa-check" /> Data information certified
+                </div>
+              </CardFooter>
+            ) : (
+              <CardFooter>
+                <div className="card-stats">
+                  <i className="fa fa-check" /> Data information certified
+                </div>
+              </CardFooter>
+            )}
           </Card>
+
+
+          {/* <Page /> */}
+          {/* <TestTable /> */}
         </Col>
       </Row>
     </div>
@@ -99,3 +181,34 @@ const Analytics = () => {
 };
 
 export default Analytics;
+
+// line chart of bmw
+// const dataItem2 = {
+//   labels: dataSchedule.Day,
+//   datasets: [
+//     {
+//       label: "Schedule",
+//       data: dataSchedule.Schedule,
+//       fill: false,
+//       backgroundColor: "linear-gradient(to right, #20f08b, #07dfb1)",
+//       borderColor: "#05deb3",
+//       pointBorderColor: "#fbc658",
+//       borderWidth: 5,
+//       pointRadius: 4,
+//       pointHoverRadius: 8,
+//       pointBorderWidth: 12,
+//     },
+//   ],
+// };
+
+// const options2 = {
+//   responsive: true,
+//   title: {
+//     display: true,
+//     position: "left",
+//     text: "Schedule",
+//   },
+//   legend: {
+//     display: true,
+//   },
+// };

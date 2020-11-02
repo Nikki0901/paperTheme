@@ -1,26 +1,23 @@
 /*! search box css */
-.search_head{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-
-/*sales header css*/
-.sales_header{
-  display: flex;
-  align-items: center;
-}
-
-
-.pagination_btn{
+.search_head {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
+/*sales header css*/
+.sales_header {
+  display: flex;
+  align-items: center;
+}
 
-.date_picker{
+.pagination_btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.date_picker {
   background: #1ae6e6;
 }
 
@@ -28,57 +25,42 @@
 
 
 
-
-
-
-
-
 /*! dashboard card css */
 
-.total_user{
-    color:white;
-    background-color: cornflowerblue;
-    /* transition: width 1s, height 1s, transform 2s; */
+.total_user {
+  color: white;
+  background-color: cornflowerblue;
+  /* transition: width 1s, height 1s, transform 2s; */
+}
+
+.total_sales {
+  color: white;
+  background-color: darkcyan;
+}
+
+.total_recording {
+  color: white;
+  background-color: blueviolet;
+}
+
+.total_dealership {
+  color: white;
+  background-color: #18a727;
+}
+
+.total_rating {
+  color: white;
+  background-color: #3b3f8c;
+}
+
+.total_schedule {
+  color: white;
+  background-color: #523519;
 }
 
 
-/* .total_user:hover {
-     background: rgb(33,33,32,0.8);
-    transform: scale(0.8,0.8)
-  } */
+/*! Modal css */
 
-
-.total_sales{
-    color:white;
-    background-color: darkcyan;
-      /* transition: width 1s, height 1s, transform 2s; */
-
-}
-
-/* .total_sales:hover {
-    background: rgb(33,33,32,0.8);
-        transform: scale(0.8,0.8)
-
-  } */
-
-
-.total_recording{
-    color:white;
-    background-color: blueviolet;
-      /* transition: width 1s, height 1s, transform 3s; */
-
-}
-
-/* .total_recording:hover {
-    background: rgb(33,33,32,0.8);
-        transform: scale(0.8,0.8)
-
-  } */
-
-
-  .total_dealership{
-    color:white;
-    background-color: #18a727;
-      /* transition: width 1s, height 1s, transform 3s; */
-
-}
+/* .modal_form {
+  width: 180%;
+} */

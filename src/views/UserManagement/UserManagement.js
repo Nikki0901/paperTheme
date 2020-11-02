@@ -12,7 +12,7 @@ import {
   Table,
 } from "reactstrap";
 
-import baseUrl from "../../components/Service/Config";
+import {baseUrl} from "../../components/Service/Config";
 import Delete from "../../assets/svg/delete";
 import "../../assets/css/style.css";
 
@@ -35,7 +35,6 @@ const UserManagement = () => {
       } else if (nt === prev) {
         prevPage(nt); // key = 0 , 4
       } else {
-        console.log("getdata fn");
         getData();
       }
     };
@@ -78,7 +77,7 @@ const UserManagement = () => {
         setNext(10)
       })
       .catch(function (error) {
-        alert.error("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -100,7 +99,7 @@ const UserManagement = () => {
         }
       })
       .catch(function (error) {
-        alert.show("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -120,7 +119,7 @@ const UserManagement = () => {
         }
       })
       .catch(function (error) {
-        alert.show("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -143,7 +142,6 @@ const UserManagement = () => {
       },
       (err) => {
         console.log("error - ", err);
-        alert.error("request error ! not deleted");
       }
     );
   };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import { useForm } from "react-hook-form";
-import baseUrl from "../../components/Service/Config";
+import {baseUrl} from "../../components/Service/Config";
 import axios from "axios";
 import { useAlert } from "react-alert";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,7 +11,7 @@ const Schema = yup.object().shape({
   p_title: yup.string().required('required title'),
   p_email: yup.string().email('invalid email').required('required email'),
   p_fname: yup.string().required('required first name'),
-  p_lname: yup.string().required('required last name'),
+  // p_lname: yup.string().required('required last name'),
   p_city: yup.string().required('required city'),
   p_phone:yup.string()
             .required('required phone no')
@@ -20,7 +20,8 @@ const Schema = yup.object().shape({
             .max(20, 'max 20 digits'),
   p_pin:yup.string()
             .required('required pincode no')
-            .matches(/^[0-9]+$/, "Must be only digits no"),
+            .matches(/^[0-9]+$/, "Must be only digits no")
+            .max(20, 'max 15 digits'),
 });
 
 const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
@@ -30,8 +31,11 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
   });
 
   const auth = JSON.parse(localStorage.getItem("authToken"));
+   //user name
+   const userName = JSON.parse(localStorage.getItem("userName"));
+
   const [user, setUser] = useState({
-    title: "",
+    // title: "",
     fname: "",
     lname: "",
     email: "",
@@ -40,7 +44,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
     pin: "",
   });
 
-  const { title, fname, lname, email, city,phone, pin } = user;
+  const {  fname, lname, email, city,phone, pin } = user;
 
   useEffect(() => {
     console.log("call edit use effect");
@@ -49,7 +53,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
       .then(function (response) {
         // console.log("data with id-", response);
         setUser({
-          title: response.data.result[0].title,
+          // title: response.data.result[0].title,
           fname: response.data.result[0].first_name,
           lname: response.data.result[0].last_name,
           email: response.data.result[0].email,
@@ -58,7 +62,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
           pin: response.data.result[0].pincode,
         });
       });
-  }, [id]);
+  }, [id,auth]);
 
   const onSubmit = (value) => {
     console.log("value :", value);
@@ -90,7 +94,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
   return (
     <div>
       <Modal isOpen={editModal} toggle={editHandler} size="lg">
-        <ModalHeader toggle={editHandler}>Edit Form</ModalHeader>
+        <ModalHeader toggle={editHandler}>Edit User</ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div
@@ -98,19 +102,19 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
               style={{ display: "flex", justifyContent: "start" }}
             >
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Add title</label>
+                <label>Add title *</label>
                 <input
                   type="text"
                   className="form-control"
-                  defaultValue={title}
+                  value={userName}
                   name="p_title"
-                 ref={register}
+                  ref={register}
                 />
                 <p className="error">{errors.p_title && errors.p_title.message}</p>
               </div>
 
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Email Id</label>
+                <label>Email Id *</label>
                 <input
                   type="email"
                   className="form-control"
@@ -126,7 +130,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
               style={{ display: "flex", justifyContent: "start" }}
             >
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>First Name</label>
+                <label>First Name *</label>
                 <input
                   type="text"
                   className="form-control"
@@ -145,7 +149,6 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
                   name="p_lname"
                   ref={register}
                 />
-                <p className="error">{errors.p_lname && errors.p_lname.message}</p>
               </div>
             </div>
             <div
@@ -153,7 +156,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
               style={{ display: "flex", justifyContent: "start" }}
             >
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Phone</label>
+                <label>Phone *</label>
                 <input
                   type="text"
                   className="form-control"
@@ -165,7 +168,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
               </div>
 
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>City</label>
+                <label>City *</label>
                 <input
                   type="text"
                   className="form-control"
@@ -182,7 +185,7 @@ const EditDetails = ({ editModal, editHandler, id, getData ,next }) => {
               style={{ display: "flex", justifyContent: "start" }}
             >
               <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Pin Code</label>
+                <label>Pin Code *</label>
                 <input
                   type="text"
                   className="form-control"

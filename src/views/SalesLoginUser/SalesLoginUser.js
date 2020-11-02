@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import axios from "axios";
 import { useAlert } from "react-alert";
-
 import {
   Card,
   CardHeader,
@@ -13,7 +12,7 @@ import {
   Button,
 } from "reactstrap";
 
-import baseUrl from "../../components/Service/Config";
+import { baseUrl } from "../../components/Service/Config";
 import Delete from "../../assets/svg/delete";
 import "../../assets/css/style.css";
 import AddDetails from "./AddDetails";
@@ -61,21 +60,17 @@ const SalesLoginUser = () => {
       .then((response) => response.json())
       .then((json) => {
         console.log("salesData", json);
-        console.log("offset", json.offset);
         if (json.code === 1) {
           setData(json.result);
           setNext(json.offset); // offset = 4
-        } else {
-          alert.show("result not found !");
         }
       })
       .catch((err) => {
-        alert.error("request error ! check it");
+        console.log("error", err);
       });
-  }, [auth, alert]);
+  },[auth]);
 
   useEffect(() => {
-    console.log("call sales use effect");
     getData();
   }, [getData]);
 
@@ -83,18 +78,22 @@ const SalesLoginUser = () => {
   const search = (key) => {
     console.log("input--", key);
     axios
-      .get(`${baseUrl}/user/search/value/${key}/role/sales/token/${auth}`)
+      .get(
+        `${baseUrl}/bmw/sales_list/token/${auth}/search_key/${key}/offset/0/limit/10`
+      )
       .then(function (response) {
-        console.log("code---", response.data.result);
-        if (response.data.result) {
+        console.log("search--", response);
+        if (response.data.code === 1) {
+          // if(response.data.result){
           setData(response.data.result);
           setSerial(1);
           setNext(10);
+          // }
         }
         // updateData(next);
       })
       .catch(function (error) {
-        alert.error("request error !");
+        console.log("error", error);
       });
   };
 
@@ -102,7 +101,7 @@ const SalesLoginUser = () => {
   const nextPage = (key) => {
     console.log("next", key);
     axios
-      .get(`${baseUrl}/sales_users/list/offset/${key}/limit/10/token/${auth}`)
+      .get(`${baseUrl}/bmw/sales_list/token/${auth}/id//offset/${key}/limit/10`)
       .then(function (response) {
         console.log("next-data", response);
         if (response.data.code === 1) {
@@ -126,7 +125,7 @@ const SalesLoginUser = () => {
   const prevPage = (key) => {
     console.log("prev", key);
     axios
-      .get(`${baseUrl}/sales_users/list/offset/${key}/limit/10/token/${auth}`)
+      .get(`${baseUrl}/bmw/sales_list/token/${auth}/id//offset/${key}/limit/10`)
       .then(function (response) {
         console.log("prev-data", response);
         if (response.data.code === 1) {
@@ -172,7 +171,7 @@ const SalesLoginUser = () => {
                   type="text"
                   className="form-control"
                   style={{ width: "240px" }}
-                  placeholder="search"
+                  placeholder="search by name"
                   onChange={(event) => search(event.target.value)}
                 />
                 <button
@@ -196,6 +195,7 @@ const SalesLoginUser = () => {
                 <tr>
                   <th>S.no</th>
                   <th>Name</th>
+                  <th>Passcode</th>
                   <th>Phone No</th>
                   <th>Location</th>
                   <th>Pin</th>
@@ -208,7 +208,8 @@ const SalesLoginUser = () => {
                   data.map((p, i) => (
                     <tr key={i}>
                       <td>{i + serial}</td>
-                      <td>{p.first_name}</td>
+                      <td>{p.dealer_name}</td>
+                      <td>{p.passcode}</td>
                       <td>{p.phone}</td>
                       <td>{p.city}</td>
                       <td>{p.pincode}</td>
@@ -272,7 +273,6 @@ const SalesLoginUser = () => {
 
 export default SalesLoginUser;
 
-
 // const updateData = () => {
 //   setData(data.filter((c) => c.id != id));
 // };
@@ -285,29 +285,3 @@ export default SalesLoginUser;
 //       name : json.result[0].first_name,
 //     });
 // })
-
-{
-  /* <Modal isOpen={editModal} toggle={editHandler}>
-        <ModalHeader toggle={editHandler}>Fill Form</ModalHeader>
-        <ModalBody>
-          <form>
-            <div className="form-group">
-              <label>Add title</label>
-              <input
-                type="text"
-                className="form-control"
-                name="p_title"
-                defaultValue={name}
-                ref={register({
-                  required: "required",
-                })}
-              />
-            </div>
-          
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
-        </ModalBody>
-      </Modal> */
-}

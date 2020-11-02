@@ -11,7 +11,7 @@ import "assets/demo/demo.css";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 import AdminLayout from "layouts/Admin.js";
-import Login from "./Login/Login";
+import Login from "./Login/Login-page";
 import PrivateRoute from "./components/Service/PrivateRoute";
 
 const options = {
@@ -59,7 +59,9 @@ const App = () => {
 
 export default App;
 
-{
+
+
+
   /* <Switch>
     <Route exact path="/" component={Login} />
     <PrivateRoute path="/admin" 
@@ -68,4 +70,4 @@ export default App;
 
     <Route path="*" component={() => "404 not found"} />       
   </Switch> */
-}
+

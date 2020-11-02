@@ -13,7 +13,7 @@ import {
   Button,
 } from "reactstrap";
 
-import baseUrl from "../../components/Service/Config";
+import {baseUrl} from "../../components/Service/Config";
 import Delete from "../../assets/svg/delete";
 import "../../assets/css/style.css";
 
@@ -58,15 +58,12 @@ const Recording = () => {
         if (json.code === 1) {
           setData(json.result);
           setNext(json.offset); // offset = 2
-        } else {
-          alert.show("result not found !");
         }
       })
-      .catch((err) => {
-        console.log(err);
-        alert.show("request error ! check it");
+      .catch((error) => {
+        console.log("error", error);
       });
-  },[auth,alert]);
+  },[auth]);
 
   useEffect(() => {
     getData();
@@ -85,7 +82,7 @@ const Recording = () => {
         setNext(10)
       })
       .catch(function (error) {
-        alert.error("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -109,7 +106,7 @@ const Recording = () => {
         } 
       })
       .catch(function (error) {
-        alert.error("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -133,7 +130,7 @@ const Recording = () => {
         }
       })
       .catch(function (error) {
-        alert.error("request error ! check it");
+        console.log("error", error);
       });
   };
 
@@ -154,8 +151,8 @@ const Recording = () => {
         alert.success("successfully deleted ");
         updateData(next);
       },
-      (err) => {
-        alert.error("request error ! not deleted");
+      (error) => {
+        console.log("error", error);
       }
     );
   };

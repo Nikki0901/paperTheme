@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 import { useForm } from "react-hook-form";
-import baseUrl from "../../components/Service/Config";
+import {baseUrl} from "../../components/Service/Config";
 import { useAlert } from "react-alert";
 
 const Setting = () => {
@@ -33,7 +33,7 @@ const Setting = () => {
           }
         })
         .catch((err) => {
-          alert.error("Setting request error ! check it");
+          console.log("error",err);
         });
     };
     getData();
@@ -66,7 +66,7 @@ const Setting = () => {
         }
       })
       .catch((error) => {
-        alert.show("request error !");
+        console.log("error", error);
       });
   };
 

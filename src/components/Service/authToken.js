@@ -1,3 +1,4 @@
-// export const auth = JSON.parse(localStorage.getItem("authToken"));
+ 
+//  const auth = JSON.parse(localStorage.getItem("authToken"));
+// export default auth;
 
-// console.log(auth)

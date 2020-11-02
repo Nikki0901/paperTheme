@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import baseUrl from "../../components/Service/Config";
+import { baseUrl } from "../../components/Service/Config";
 import { useAlert } from "react-alert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import "../../assets/css/style.css";
 
 const Schema = yup.object().shape({
   p_title: yup.string().required("required title"),
   p_email: yup.string().email("invalid email").required("required email"),
   p_fname: yup.string().required("required first name"),
   p_lname: yup.string().required("required last name"),
-  p_dealer: yup.string().required("required dealer name"),
+  p_dealer: yup.string().required("select dealer name"),
   p_city: yup.string().required("required city"),
   p_passcode: yup.string().required("required passcode"),
   p_phone: yup
@@ -24,7 +25,8 @@ const Schema = yup.object().shape({
   p_pin: yup
     .string()
     .required("required pincode no")
-    .matches(/^[0-9]+$/, "Must be only digits no"),
+    .matches(/^[0-9]+$/, "Must be only digits no")
+    .max(20, "max 15 digits"),
 });
 
 const AddDetails = ({ addModal, addHandler, getData, next }) => {
@@ -33,8 +35,31 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
     resolver: yupResolver(Schema),
   });
 
-  const [dealerError, setDealerError] = useState("");
+  const [dealer, setDealer] = useState([]);
+
   const auth = JSON.parse(localStorage.getItem("authToken"));
+  //user name
+  const userName = JSON.parse(localStorage.getItem("userName"));
+
+  //get dealership
+
+  const getDealerShip = useCallback(() => {
+    fetch(`${baseUrl}/dealership/list/offset/0/limit/10/token/${auth}`)
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("getdealer", json.result);
+        if (json.code === 1) {
+          setDealer(json.result);
+        }
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  }, [auth]);
+
+  useEffect(() => {
+    getDealerShip();
+  }, [getDealerShip]);
 
   //add data
   const onSubmit = (value) => {
@@ -65,10 +90,6 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
         reset();
         getData(next);
         addHandler();
-      } else {
-        var a = "Please , enter right dealer name";
-        setDealerError(a);
-        // alert.error("wrong dealer, please enter right dealer name ");
       }
     });
   };
@@ -76,27 +97,27 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
   return (
     <div>
       <Modal isOpen={addModal} toggle={addHandler} size="lg">
-        <ModalHeader toggle={addHandler}>Fill Form</ModalHeader>
+        <ModalHeader toggle={addHandler}>Add User</ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div
-              className="row"
-              style={{ display: "flex", justifyContent: "start" }}
+              class="form-row"
             >
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+              <div class="form-group col-sm-4">
                 <label>Add title</label>
                 <input
                   type="text"
                   className="form-control"
                   name="p_title"
                   ref={register}
+                  value={userName}
                 />
                 <p className="error">
                   {errors.p_title && errors.p_title.message}
                 </p>
               </div>
 
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+              <div class="form-group col-sm-4">
                 <label>Email Id</label>
                 <input
                   type="email"
@@ -108,12 +129,22 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
                   {errors.p_email && errors.p_email.message}
                 </p>
               </div>
+              <div class="form-group col-sm-4">
+                <label>Passcode</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="p_passcode"
+                  ref={register}
+                />
+                <p className="error">
+                  {errors.p_passcode && errors.p_passcode.message}
+                </p>
+              </div>
             </div>
-            <div
-              className="row"
-              style={{ display: "flex", justifyContent: "start" }}
-            >
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+
+            <div class="form-row">
+              <div class="form-group col-sm-4">
                 <label>First Name</label>
                 <input
                   type="text"
@@ -125,7 +156,8 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
                   {errors.p_fname && errors.p_fname.message}
                 </p>
               </div>
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+
+              <div class="form-group col-sm-4">
                 <label>Last Name</label>
                 <input
                   type="text"
@@ -137,12 +169,27 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
                   {errors.p_lname && errors.p_lname.message}
                 </p>
               </div>
+
+              <div class="form-group col-sm-4">
+                <label>Select Dealer Name</label>
+                <select className="form-control" name="p_dealer" ref={register}>
+                  <option value="">--select--</option>
+                  {dealer.map((p, index) => (
+                    <option key={index} value={p.name}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="error">
+                  {errors.p_dealer && errors.p_dealer.message}
+                </p>
+              </div>
+
+              
             </div>
-            <div
-              className="row"
-              style={{ display: "flex", justifyContent: "start" }}
-            >
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+
+            <div class="form-row">
+              <div class="form-group col-sm-4">
                 <label>Phone</label>
                 <input
                   type="text"
@@ -154,8 +201,18 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
                   {errors.p_phone && errors.p_phone.message}
                 </p>
               </div>
+              <div class="form-group col-sm-4">
+                <label>Pin Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="p_pin"
+                  ref={register}
+                />
+                <p className="error">{errors.p_pin && errors.p_pin.message}</p>
+              </div>
 
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
+              <div class="form-group col-sm-4">
                 <label>City</label>
                 <input
                   type="text"
@@ -169,53 +226,7 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
               </div>
             </div>
 
-            <div
-              className="row"
-              style={{ display: "flex", justifyContent: "start" }}
-            >
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Pin Code</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="p_pin"
-                  ref={register}
-                />
-                <p className="error">{errors.p_pin && errors.p_pin.message}</p>
-              </div>
 
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Add Dealer Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="p_dealer"
-                  ref={register}
-                />
-                <p className="error">
-                  {errors.p_dealer ? errors.p_dealer.message : dealerError}
-                </p>
-
-                {/* <p className="error">wrong dealer, please enter right dealer name "</p> */}
-              </div>
-            </div>
-            <div
-              className="row"
-              style={{ display: "flex", justifyContent: "start" }}
-            >
-              <div className="col-sm-5" style={{ marginBottom: 15 }}>
-                <label>Passcode</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="p_passcode"
-                  ref={register}
-                />
-                <p className="error">
-                  {errors.p_passcode && errors.p_passcode.message}
-                </p>
-              </div>
-            </div>
             <button type="submit" className="btn btn-primary">
               Submit
             </button>

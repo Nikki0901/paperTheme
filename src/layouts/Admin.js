@@ -3,7 +3,7 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch } from "react-router-dom";
 
 import DemoNavbar from "components/Navbars/DemoNavbar.js";
-import Footer from "components/Footer/Footer.js";
+// import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 // import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
@@ -58,12 +58,14 @@ class Dashboard extends React.Component {
     return (
       <div className="wrapper">     
         {/* {this.adminAuth()} */}
+        
         <Sidebar
           {...this.props}
-          routes={routes}
+          // routes={routes}
           bgColor={this.state.backgroundColor}
-          activeColor={this.state.activeColor}
+          // activeColor={this.state.activeColor}
         />
+
         <div className="main-panel" ref={this.mainPanel}>
           <DemoNavbar {...this.props} />
           <Switch>
@@ -77,7 +79,7 @@ class Dashboard extends React.Component {
               );
             })}
           </Switch>
-          <Footer fluid />
+          {/* <Footer fluid /> */}
         </div>
         {/* <FixedPlugin
           bgColor={this.state.backgroundColor}
