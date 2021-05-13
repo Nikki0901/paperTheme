@@ -24,33 +24,38 @@ const options = {
 const history = createBrowserHistory();
 
 const App = () => {
+  // const Routing = () => {
+  //   // useEffect(() => {
+  //   //   const user = localStorage.getItem("authToken");
+  //   //   if (user) {
+  //   //     history.push("/admin/dashboard");
+  //   //   } else {
+  //   //     history.push("/");
+  //   //   }
+  //   // }, []);
 
-  const Routing = () => {
-    useEffect(() => {
-      const user = localStorage.getItem("authToken");
-      if (user) {
-        history.push("/admin/dashboard");
-      } else {
-        history.push("/");
-      }
-    }, []);
-
-    return (
-      <Switch>
-        <Route exact path="/" component={Login} />
-        <PrivateRoute
-          path="/admin"
-          render={(props) => <AdminLayout {...props} />}
-        />
-      </Switch>
-    );
-  };
+  //   return (
+  //     <Switch>
+  //       <Route exact path="/" component={Login} />
+  //       <Route
+  //         path="/admin"
+  //         render={(props) => <AdminLayout {...props} />}
+  //       />
+  //     </Switch>
+  //   );
+  // };
 
   return (
     <div>
       <Provider template={AlertTemplate} {...options}>
         <Router history={history}>
-          <Routing />
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <Route
+              path="/admin"
+              render={(props) => <AdminLayout {...props} />}
+            />
+          </Switch>
         </Router>
       </Provider>
     </div>
@@ -59,10 +64,7 @@ const App = () => {
 
 export default App;
 
-
-
-
-  /* <Switch>
+/* <Switch>
     <Route exact path="/" component={Login} />
     <PrivateRoute path="/admin" 
       render={(props) => <AdminLayout {...props} />}                   
@@ -70,4 +72,3 @@ export default App;
 
     <Route path="*" component={() => "404 not found"} />       
   </Switch> */
-

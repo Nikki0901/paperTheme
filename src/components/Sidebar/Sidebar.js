@@ -86,44 +86,8 @@ class Sidebar extends React.Component {
                 activeClassName="navbar__link--active"
                 className="navbar__link"
               >
-                {/* <i className="nc-icon nc-badge" /> */}
                 <i class="far fa-address-card"></i>
                 <p>Sales</p>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/admin/dealership"
-                activeClassName="navbar__link--active"
-                className="navbar__link"
-              >
-                <i className="nc-icon nc-single-copy-04" />
-
-                <p>Dealership</p>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/admin/schedule"
-                activeClassName="navbar__link--active"
-                className="navbar__link"
-              >
-                {/* <i class="fas fa-calendar-alt"></i>   */}
-                <i className="nc-icon nc-calendar-60" />
-                <p>Schedule</p>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/admin/rating-list"
-                activeClassName="navbar__link--active"
-                className="navbar__link"
-              >
-                <i class="fas fa-star-half-alt"></i>
-                <p>Rating List</p>
               </NavLink>
             </li>
 
@@ -148,53 +112,6 @@ class Sidebar extends React.Component {
                 <p>User Management</p>
               </NavLink>
             </li>
-
-           
-
-            <li>
-              <NavLink
-                to="/admin/recording"
-                activeClassName="navbar__link--active"
-                className="navbar__link"
-              >
-                <i className="nc-icon nc-tv-2" />
-                <p>Recording</p>
-              </NavLink>
-            </li>
-
-            <li>
-              <div className="navbar__link" onClick={this.openDropDown}>
-                <i className="nc-icon nc-settings" />
-                <span className="setting_icon">
-                  Settings
-                  <i class="fa fa-caret-down" />
-                </span>
-              </div>
-
-              {this.state.show && (
-                <ul style={{ listStyle: "none" }}>
-                  <li>
-                    <NavLink
-                      to="/admin/settings"
-                      activeClassName="navbar__link--active"
-                      className="navbar__link"
-                    >
-                      <p>Product Settings</p>
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/admin/apk-settings"
-                      activeClassName="navbar__link--active"
-                      className="navbar__link"
-                    >
-                      <p>Apk Settings</p>
-                    </NavLink>
-                  </li>
-                </ul>
-              )}
-            </li>
           </Nav>
         </div>
       </div>
@@ -204,8 +121,7 @@ class Sidebar extends React.Component {
 
 export default Sidebar;
 
-
-  /* <Nav>
+/* <Nav>
             {this.props.routes.map((prop, key) => {
               return (
                 <li
@@ -227,4 +143,3 @@ export default Sidebar;
               );
             })}
           </Nav> */
-

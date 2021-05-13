@@ -3,8 +3,6 @@ import axios from "axios";
 import { Card, CardTitle, Row, Col } from "reactstrap";
 import { baseUrl } from "../../components/Service/Config";
 import "../../assets/css/style.css";
-// import { connect } from "react-redux";
-// import { getDealership } from "../../action";
 
 function Dashboard() {
   const [user, setUser] = useState("");
@@ -193,6 +191,7 @@ function Dashboard() {
 
 
 export default Dashboard;
+
 
 
    // {

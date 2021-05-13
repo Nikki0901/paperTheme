@@ -44,7 +44,7 @@ const AddDetails = ({ addModal, addHandler, getData, next }) => {
   //get dealership
 
   const getDealerShip = useCallback(() => {
-    fetch(`${baseUrl}/dealership/list/offset/0/limit/10/token/${auth}`)
+    fetch(`${baseUrl}/dealership/list/offset/0/limit/200/token/${auth}`)
       .then((response) => response.json())
       .then((json) => {
         console.log("getdealer", json.result);
