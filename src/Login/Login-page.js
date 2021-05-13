@@ -72,20 +72,17 @@ const Login2 = (props) => {
               //   },
               // })}
             />
-            {/* <p className="error">{errors.email && errors.email.message}</p> */}
+          
           </div>
           <div class="form-group">
             <input
               type="password"
               name="password"
               className="input_Field"
-              placeholder="Password"
-              // ref={register({
-              //   required: "required",
-              // })}
+              placeholder="Password"        
             />
 
-            {/* {errors.password && <p className="error">Password is required</p>} */}
+  
           </div>
 
           <div class="form-group">
